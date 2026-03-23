@@ -1,0 +1,309 @@
+
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "<div style=\"background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 16px; padding: 32px; margin-bottom: 20px; font-family: 'Segoe UI', sans-serif; box-shadow: 0 8px 32px rgba(0,0,0,0.3);\">\n",
+        "  <h1 style=\"color: #e94560; font-size: 2.2em; margin: 0 0 10px 0; letter-spacing: 2px; text-transform: uppercase;\">📊 Interactive Data Science Foundations</h1>\n",
+        "  <p style=\"color: #a8b2d8; font-size: 1.05em; margin: 0 0 20px 0;\">NumPy · Pandas · Data Cleaning · EDA · Interactive Widgets</p>\n",
+        "  <hr style=\"border: 1px solid #e94560; opacity: 0.3; margin: 20px 0;\">\n",
+        "  <p style=\"color: #ccd6f6; font-size: 0.95em; line-height: 1.6; margin: 0;\">Welcome to an interactive notebook! Click buttons, adjust sliders, and explore real data dynamically. Learn NumPy, Pandas, and data cleaning with hands‑on widgets.</p>\n",
+        "  <div style=\"display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;\">\n",
+        "    <span style=\"background: rgba(233,69,96,0.2); color: #e94560; border: 1px solid #e94560; border-radius: 20px; padding: 4px 14px; font-size: 0.82em;\">🐍 Python 3</span>\n",
+        "    <span style=\"background: rgba(100,255,218,0.1); color: #64ffda; border: 1px solid #64ffda; border-radius: 20px; padding: 4px 14px; font-size: 0.82em;\">📦 NumPy</span>\n",
+        "    <span style=\"background: rgba(100,255,218,0.1); color: #64ffda; border: 1px solid #64ffda; border-radius: 20px; padding: 4px 14px; font-size: 0.82em;\">🐼 Pandas</span>\n",
+        "    <span style=\"background: rgba(100,255,218,0.1); color: #64ffda; border: 1px solid #64ffda; border-radius: 20px; padding: 4px 14px; font-size: 0.82em;\">📈 Seaborn</span>\n",
+        "    <span style=\"background: rgba(100,255,218,0.1); color: #64ffda; border: 1px solid #64ffda; border-radius: 20px; padding: 4px 14px; font-size: 0.82em;\">🎨 Matplotlib</span>\n",
+        "    <span style=\"background: rgba(100,255,218,0.1); color: #64ffda; border: 1px solid #64ffda; border-radius: 20px; padding: 4px 14px; font-size: 0.82em;\">🔘 ipywidgets</span>\n",
+        "  </div>\n",
+        "</div>"
+      ]
+    },
+    
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "# Import libraries\n",
+        "import numpy as np\n",
+        "import pandas as pd\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "import ipywidgets as widgets\n",
+        "from IPython.display import display, clear_output, HTML\n",
+        "\n",
+        "# Enable interactive plots\n",
+        "%matplotlib inline\n",
+        "\n",
+        "# Load datasets (make sure they are in the same folder)\n",
+        "iris_df = pd.read_csv(\"iris.csv\")\n",
+        "diabetes_df = pd.read_csv(\"diabetes.csv\")\n",
+        "\n",
+        "# Clean diabetes dataset (as in original notebook)\n",
+        "df_diabetes = diabetes_df.copy()\n",
+        "df_diabetes['Insulin'] = df_diabetes['Insulin'].fillna(df_diabetes['Insulin'].mean())\n",
+        "cols_impute = ['BloodPressure', 'SkinThickness', 'BMI']\n",
+        "for col in cols_impute:\n",
+        "    df_diabetes[col] = df_diabetes[col].fillna(df_diabetes[col].mean())\n",
+        "df_diabetes.dropna(inplace=True)\n",
+        "\n",
+        "print(\"Datasets loaded and cleaned.\")"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "<div style=\"background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); border-left: 5px solid #64ffda; border-radius: 0 12px 12px 0; padding: 24px 28px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; overflow-x: auto;\">\n",
+        "  <h2 style=\"color: #64ffda; font-size: 1.6em; margin: 0 0 12px 0;\">🔢 NumPy Interactive Demo</h2>\n",
+        "  <p style=\"color: #ccd6f6; font-size: 0.97em; line-height: 1.65;\">Explore NumPy arrays interactively: create arrays, check shapes, and perform operations.</p>\n",
+        "</div>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "# Interactive array creator\n",
+        "def create_array(rows, cols):\n",
+        "    arr = np.random.randint(1, 20, size=(rows, cols))\n",
+        "    print(f\"Array shape: {arr.shape}\\n{arr}\")\n",
+        "\n",
+        "rows_slider = widgets.IntSlider(value=3, min=1, max=5, description='Rows:')\n",
+        "cols_slider = widgets.IntSlider(value=3, min=1, max=5, description='Cols:')\n",
+        "out = widgets.interactive_output(create_array, {'rows': rows_slider, 'cols': cols_slider})\n",
+        "\n",
+        "display(widgets.HBox([rows_slider, cols_slider]), out)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "<div style=\"background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); border-left: 5px solid #f7c59f; border-radius: 0 12px 12px 0; padding: 24px 28px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; overflow-x: auto;\">\n",
+        "  <h2 style=\"color: #f7c59f; font-size: 1.6em; margin: 0 0 12px 0;\">🌸 Interactive Iris Explorer</h2>\n",
+        "  <p style=\"color: #ccd6f6; font-size: 0.97em;\">Select a species and see the distribution of sepal/petal dimensions.</p>\n",
+        "</div>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "species = iris_df['class'].unique().tolist()\n",
+        "species_dropdown = widgets.Dropdown(options=species, description='Species:')\n",
+        "feature_dropdown = widgets.Dropdown(options=['sepal_length', 'sepal_width', 'petal_length', 'petal_width'],\n",
+        "                                      description='Feature:')\n",
+        "\n",
+        "def plot_iris_dist(species_choice, feature):\n",
+        "    data = iris_df[iris_df['class'] == species_choice][feature]\n",
+        "    plt.figure(figsize=(6,4))\n",
+        "    sns.histplot(data, kde=True, color='#64ffda')\n",
+        "    plt.title(f'{feature} distribution for {species_choice}')\n",
+        "    plt.xlabel(feature)\n",
+        "    plt.ylabel('Frequency')\n",
+        "    plt.tight_layout()\n",
+        "    plt.show()\n",
+        "\n",
+        "interact_iris = widgets.interactive(plot_iris_dist, species_choice=species_dropdown, feature=feature_dropdown)\n",
+        "display(interact_iris)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "<div style=\"background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); border-left: 5px solid #a5d6a7; border-radius: 0 12px 12px 0; padding: 24px 28px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; overflow-x: auto;\">\n",
+        "  <h2 style=\"color: #a5d6a7; font-size: 1.6em; margin: 0 0 12px 0;\">🩺 Diabetes Data: Interactive Data Viewer</h2>\n",
+        "  <p style=\"color: #ccd6f6; font-size: 0.97em;\">Use the slider to view a specific row from the cleaned diabetes dataset.</p>\n",
+        "</div>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "row_slider = widgets.IntSlider(value=0, min=0, max=len(df_diabetes)-1, description='Row index:')\n",
+        "\n",
+        "def show_row(idx):\n",
+        "    display(df_diabetes.iloc[idx:idx+1])\n",
+        "\n",
+        "widgets.interactive(show_row, idx=row_slider)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "<div style=\"background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); border-left: 5px solid #ce93d8; border-radius: 0 12px 12px 0; padding: 24px 28px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; overflow-x: auto;\">\n",
+        "  <h2 style=\"color: #ce93d8; font-size: 1.6em; margin: 0 0 12px 0;\">🩹 Interactive Imputation Simulator</h2>\n",
+        "  <p style=\"color: #ccd6f6; font-size: 0.97em;\">Choose a column with missing values and an imputation method (mean/median). See the effect on summary statistics.</p>\n",
+        "</div>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "# Original diabetes data with missing values (for simulation)\n",
+        "df_raw = diabetes_df.copy()\n",
+        "columns_with_na = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']\n",
+        "\n",
+        "col_dropdown = widgets.Dropdown(options=columns_with_na, description='Column:')\n",
+        "method_dropdown = widgets.Dropdown(options=['mean', 'median'], description='Method:')\n",
+        "\n",
+        "def impute_and_show(col, method):\n",
+        "    df_sim = df_raw.copy()\n",
+        "    if method == 'mean':\n",
+        "        df_sim[col] = df_sim[col].fillna(df_sim[col].mean())\n",
+        "    else:\n",
+        "        df_sim[col] = df_sim[col].fillna(df_sim[col].median())\n",
+        "    \n",
+        "    print(f\"Missing values after imputation: {df_sim[col].isna().sum()}\")\n",
+        "    print(\"\\nDescriptive statistics of the column:\")\n",
+        "    display(df_sim[col].describe())\n",
+        "    \n",
+        "    # Show before/after comparison\n",
+        "    plt.figure(figsize=(8,4))\n",
+        "    plt.subplot(1,2,1)\n",
+        "    df_raw[col].dropna().hist(bins=20, color='#e94560', alpha=0.7, label='Original (non‑null)')\n",
+        "    plt.title('Original Distribution')\n",
+        "    plt.xlabel(col)\n",
+        "    plt.subplot(1,2,2)\n",
+        "    df_sim[col].hist(bins=20, color='#64ffda', alpha=0.7)\n",
+        "    plt.title('After Imputation')\n",
+        "    plt.xlabel(col)\n",
+        "    plt.tight_layout()\n",
+        "    plt.show()\n",
+        "\n",
+        "interact_impute = widgets.interactive(impute_and_show, col=col_dropdown, method=method_dropdown)\n",
+        "display(interact_impute)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "<div style=\"background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); border-left: 5px solid #80deea; border-radius: 0 12px 12px 0; padding: 24px 28px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; overflow-x: auto;\">\n",
+        "  <h2 style=\"color: #80deea; font-size: 1.6em; margin: 0 0 12px 0;\">📊 Interactive Correlation Heatmap</h2>\n",
+        "  <p style=\"color: #ccd6f6; font-size: 0.97em;\">Choose which features to include in the correlation matrix. The heatmap updates dynamically.</p>\n",
+        "</div>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "all_features = df_diabetes.columns.tolist()\n",
+        "feature_selector = widgets.SelectMultiple(options=all_features, value=all_features, description='Features:')\n",
+        "\n",
+        "def plot_corr(selected):\n",
+        "    if len(selected) < 2:\n",
+        "        print(\"Select at least two features.\")\n",
+        "        return\n",
+        "    corr = df_diabetes[list(selected)].corr()\n",
+        "    plt.figure(figsize=(8,6))\n",
+        "    sns.heatmap(corr, annot=True, cmap='coolwarm', fmt='.2f', square=True, cbar_kws={'shrink':0.8})\n",
+        "    plt.title('Correlation Heatmap')\n",
+        "    plt.tight_layout()\n",
+        "    plt.show()\n",
+        "\n",
+        "widgets.interactive(plot_corr, selected=feature_selector)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "<div style=\"background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); border-left: 5px solid #ef9a9a; border-radius: 0 12px 12px 0; padding: 24px 28px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; overflow-x: auto;\">\n",
+        "  <h2 style=\"color: #ef9a9a; font-size: 1.6em; margin: 0 0 12px 0;\">📝 Quick Quiz (Button)</h2>\n",
+        "  <p style=\"color: #ccd6f6; font-size: 0.97em;\">Click the button to get a random question about data science concepts.</p>\n",
+        "</div>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "import random\n",
+        "\n",
+        "quiz_questions = [\n",
+        "    (\"What does NaN stand for?\", \"Not a Number\"),\n",
+        "    (\"Which method gives the number of rows and columns of a DataFrame?\", \".shape\"),\n",
+        "    (\"What is the default correlation method in pandas?\", \"Pearson\"),\n",
+        "    (\"Which function is used to read a CSV file in pandas?\", \"pd.read_csv()\"),\n",
+        "    (\"What does `df.dropna(inplace=True)` do?\", \"Removes rows with missing values and modifies the original DataFrame.\"),\n",
+        "]\n",
+        "\n",
+        "quiz_button = widgets.Button(description=\"Get a Random Question\", button_style='primary')\n",
+        "quiz_output = widgets.Output()\n",
+        "\n",
+        "def on_button_clicked(b):\n",
+        "    with quiz_output:\n",
+        "        clear_output()\n",
+        "        q, a = random.choice(quiz_questions)\n",
+        "        display(HTML(f\"<div style='background:#112240; padding:12px; border-radius:8px; color:#ccd6f6;'><strong>❓ Question:</strong> {q}<br><br><details><summary>Show Answer</summary><p style='color:#64ffda;'>{a}</p></details></div>\"))\n",
+        "\n",
+        "quiz_button.on_click(on_button_clicked)\n",
+        "display(quiz_button, quiz_output)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "<div style=\"background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 16px; padding: 32px; margin-top: 20px; font-family: 'Segoe UI', sans-serif; box-shadow: 0 8px 32px rgba(0,0,0,0.3);\">\n",
+        "  <h2 style=\"color: #64ffda; font-size: 1.6em; margin: 0 0 16px 0;\">🎓 Interactive Summary</h2>\n",
+        "  <p style=\"color: #ccd6f6; font-size: 0.97em; line-height: 1.6;\">You've explored:</p>\n",
+        "  <div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px;\">\n",
+        "    <div style=\"background: rgba(100,255,218,0.08); border: 1px solid rgba(100,255,218,0.2); border-radius: 10px; padding: 14px;\">🔘 Interactive widgets (sliders, dropdowns, buttons)</div>\n",
+        "    <div style=\"background: rgba(233,69,96,0.08); border: 1px solid rgba(233,69,96,0.2); border-radius: 10px; padding: 14px;\">🐼 Dynamic data exploration</div>\n",
+        "    <div style=\"background: rgba(179,136,255,0.08); border: 1px solid rgba(179,136,255,0.2); border-radius: 10px; padding: 14px;\">🩹 Hands‑on imputation comparison</div>\n",
+        "    <div style=\"background: rgba(255,183,77,0.08); border: 1px solid rgba(255,183,77,0.2); border-radius: 10px; padding: 14px;\">📈 Customizable correlation analysis</div>\n",
+        "  </div>\n",
+        "  <div style=\"background: rgba(255,255,255,0.05); border-radius: 10px; padding: 16px;\">\n",
+        "    <p style=\"color: #a8b2d8; margin: 0 0 10px 0; font-weight: bold;\">💡 Next steps: Try modifying the widgets or adding your own!</p>\n",
+        "    <p style=\"color: #ccd6f6; margin: 0;\">You can extend this notebook by creating your own interactive visualizations or building a simple machine learning model with widgets to tune parameters.</p>\n",
+        "  </div>\n",
+        "</div>"
+      ]
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python [conda env:base] *",
+      "language": "python",
+      "name": "conda-base-py"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.13.5"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 4
+}
